@@ -1,0 +1,838 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Test an agent · TEN%</title>
+<meta name="description" content="Try our agents live: pick a tone and watch it travel through 400 emails, set a price and watch the numbers re-check themselves, then release the batch.">
+<meta name="theme-color" content="#0a0a0d">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%230a0a0d'/%3E%3Ccircle cx='32' cy='32' r='13' fill='%238e2445'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:ital,wght@0,100..900;1,100..900&family=Source+Serif+4:ital,opsz,wght@0,8..60,200..900;1,8..60,200..900&family=Fragment+Mono:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="site.css">
+<script src="site.js"></script>
+<style>
+/* services-only: the demo hall entrance carries the working streams */
+.demo-hero{position:relative;overflow:hidden;padding-top:clamp(7rem,16vh,10rem)}
+.demo-hero .hero-streams{position:absolute;inset:0;z-index:0;pointer-events:none}
+.demo-hero .hero-streams .stream{position:absolute;top:0;bottom:0;width:210px;opacity:.5}
+.demo-hero .hs-1{right:3%}.demo-hero .hs-2{left:2.5%;opacity:.12!important}
+@media (max-width:900px){.demo-hero .hs-2{display:none}.demo-hero .hs-1{opacity:.13!important;right:-2%}}
+.demo-hero>*{position:relative;z-index:1}
+.legend{margin-top:1.6rem;max-width:52ch;color:var(--dim);font-family:var(--mono);font-size:.7rem;
+  letter-spacing:.05em;line-height:2}
+.legend b{color:var(--agent);font-weight:400}
+.legend b.w{color:var(--halo)}
+.legend i{color:var(--ink);font-style:normal}
+</style>
+</head>
+<body>
+<div class="grain" aria-hidden="true"></div>
+
+<nav class="nav" aria-label="site">
+  <a class="nav-brand" href="index.html">TEN<em class="pctm">%</em></a>
+  <div class="nav-mid">
+    <a class="nav-link" href="index.html">Home</a>
+    <a class="nav-link on" href="services.html">Test an agent</a>
+    <a class="nav-link" href="about.html">About</a>
+  </div>
+  <div class="nav-links">
+    <button class="theme-btn" id="themeBtn" type="button" aria-label="switch theme">◐</button>
+    <a class="nav-talk js-talk" href="#">Let’s talk</a>
+  </div>
+</nav>
+<div class="toast mono" id="toast" role="status"></div>
+
+<main>
+
+<!-- ============ SERVICES · ENTRANCE ============ -->
+<section class="act demo-hero" aria-labelledby="h-services">
+  <div class="hero-streams" aria-hidden="true">
+    <div class="stream hs-1" data-stream data-speed="9"></div>
+    <div class="stream hs-2" data-stream data-speed="6"></div>
+  </div>
+  <p class="kick rv">Test an agent · live demonstrations</p>
+  <h2 id="h-services" class="rv" data-morph style="--d:.08s">Watch the agents work.</h2>
+  <p class="setup rv" style="--d:.14s">Nothing on this page is a screenshot. The agent does real work right here, and it stops exactly where <b>your judgment</b> matters. Three capabilities, three inputs. Go ahead, try them.</p>
+  <p class="legend rv" style="--d:.2s">Everything in <b class="w">wine</b> is the agent at work. Everything in <b>navy</b> is the code that checks it. Everything in <i>ivory</i> is you.</p>
+</section>
+
+<hr class="rule">
+
+<!-- ============ 01 · TONE · your voice, propagated ============ -->
+<section class="act wash-wine" id="input1" aria-labelledby="h-input1">
+  <span class="gnum" aria-hidden="true">01<i class="yrs">yours</i></span>
+  <p class="kick rv"><span class="pulse"></span>Capability one ·&nbsp;your&nbsp;tone, everywhere</p>
+  <h2 id="h-input1" class="rv" data-morph style="--d:.08s">Pick the tone.</h2>
+  <p class="setup rv" style="--d:.12s">The agent is writing 400 customer emails right now. Before it sends anything, it asks you one question: <b>how should your company sound?</b></p>
+
+  <div class="draft rv" style="--d:.16s">
+    <div class="draft-head"><span>agent · writing email #212 of 400</span><span id="draftState">⏺ writing</span></div>
+    <div class="draft-body"><span id="draftFixed">Subject: A launch that re-adds its own arithmetic
+
+Dana,
+
+Every number below was verified in code before it reached you. The pricing re-adds itself nightly. </span><span id="draftTail" class="cursor"></span></div>
+    <div class="draft-status" id="draftStatus">⏸ paused. the agent can finish <b>214 drafts</b> in any voice, but it won’t pick your voice for you.</div>
+  </div>
+
+  <div class="chips rv" style="--d:.22s" role="group" aria-label="pick a tone">
+    <button class="chip" data-reg="BOLD">Bold</button>
+    <button class="chip" data-reg="PRECISE">Precise</button>
+    <button class="chip" data-reg="WARM">Warm</button>
+  </div>
+  <form class="reg-form rv" id="regForm" style="--d:.28s">
+    <label class="visually-hidden" for="regInput">or type your own tone word</label>
+    <input id="regInput" maxlength="16" autocomplete="off" spellcheck="false" placeholder="or type your own word…">
+    <button class="reg-go" type="submit" aria-label="apply your tone word">↵ apply</button>
+  </form>
+
+  <div class="board" id="board1">
+    <p class="board-label mono" id="boardLabel">waiting on your word · everything below will re-write itself</p>
+    <p class="adline" data-morph id="adline">Every claim on this page is checked before it ships.</p>
+    <p class="prop" id="prop"><b id="propN">0</b> <span id="propLabel">of 214 drafts re-written</span></p>
+    <div class="prop-bar" aria-hidden="true"><i id="propBar"></i></div>
+    <p class="tone-cap" id="toneCap">One word from you just re-wrote 214 drafts. That’s the job: you steer, it does.</p>
+  </div>
+
+  <aside class="anno" id="anno1" data-anchor="board1">
+    <span>your word · carried into 214 drafts</span>
+    <svg viewBox="0 0 200 14" preserveAspectRatio="none" aria-hidden="true"><path d="M3 9 C 40 3, 90 13, 130 7 S 180 5, 197 8"/></svg>
+  </aside>
+</section>
+
+<hr class="rule">
+
+<!-- ============ 02 · PRICE · arithmetic, verified in front of you ============ -->
+<section class="act wash-navy" id="input2" aria-labelledby="h-input2">
+  <span class="gnum" aria-hidden="true">02<i class="yrs">yours</i></span>
+  <p class="kick rv"><span class="pulse"></span>Capability two ·&nbsp;numbers&nbsp;that re-check themselves</p>
+  <h2 id="h-input2" class="rv" data-morph style="--d:.08s">Set the price you’d sleep&nbsp;at.</h2>
+  <p class="setup rv" style="--d:.14s">The agent priced this launch three ways. Slide to say how much risk you’re comfortable with, and it will <b>re-do the arithmetic in front of you</b> to prove it.</p>
+
+  <div class="slider-block rv" style="--d:.2s">
+    <div class="slider-ends" aria-hidden="true"><span>Play it safe</span><span>Bet on upside</span></div>
+    <div class="slider-rail">
+      <label class="visually-hidden" for="risk">how much risk are you comfortable with, from play it safe to bet on upside; three positions: fixed price, pay per use, revenue share</label>
+      <input type="range" id="risk" min="0" max="100" value="50" step="1" aria-label="how much risk are you comfortable with; three positions: fixed price, pay per use, revenue share">
+      <span class="tick" data-k="A" style="left:12%"><i></i><span>fixed</span></span>
+      <span class="tick" data-k="B" style="left:50%"><i></i><span>per use</span></span>
+      <span class="tick" data-k="C" style="left:88%"><i></i><span>share</span></span>
+    </div>
+    <p class="risk-read" id="riskRead" aria-hidden="true">PAY PER USE</p>
+  </div>
+
+  <div class="p-grid wide rv" style="--d:.26s">
+    <article class="p-card" data-card="A">
+      <div class="stamp" aria-hidden="true">Verified</div>
+      <span class="p-name mono">price a</span>
+      <h3 class="p-title" data-morph>The Floor</h3>
+      <p class="p-sub">one fixed price, no surprises</p>
+      <span class="p-fit mono">fits your answer</span>
+      <div class="p-rows">
+        <div class="p-row"><span>yearly fee</span><b class="num" data-v>$0</b></div>
+        <div class="p-row"><span>if usage spikes</span><b class="num" data-v>$0</b></div>
+        <div class="p-row"><span>support</span><b class="num" data-v>$0</b></div>
+        <div class="p-row p-total"><span>first year</span><b class="num" data-t>$0</b></div>
+      </div>
+      <p class="p-note">one number all year. if the work runs over, that’s our problem.</p>
+      <div class="p-check" aria-live="polite"></div>
+    </article>
+    <article class="p-card" data-card="B">
+      <div class="stamp" aria-hidden="true">Verified</div>
+      <span class="p-name mono">price b</span>
+      <h3 class="p-title" data-morph>The Meter</h3>
+      <p class="p-sub">pay only for what it actually does</p>
+      <span class="p-fit mono">fits your answer</span>
+      <div class="p-rows">
+        <div class="p-row"><span>per-task charges, est.</span><b class="num" data-v>$0</b></div>
+        <div class="p-row"><span>base fee, yearly</span><b class="num" data-v>$0</b></div>
+        <div class="p-row"><span>busy-month buffer</span><b class="num" data-v>$0</b></div>
+        <div class="p-row p-total"><span>first year</span><b class="num" data-t>$0</b></div>
+      </div>
+      <p class="p-note">every task it bills was checked in code first. no work, no bill.</p>
+      <div class="p-check" aria-live="polite"></div>
+    </article>
+    <article class="p-card" data-card="C">
+      <div class="stamp" aria-hidden="true">Verified</div>
+      <span class="p-name mono">price c</span>
+      <h3 class="p-title" data-morph>The Share</h3>
+      <p class="p-sub">cheaper up front, we win when you win</p>
+      <span class="p-fit mono">fits your answer</span>
+      <div class="p-rows">
+        <div class="p-row"><span>our cut of the upside, est.</span><b class="num" data-v>$0</b></div>
+        <div class="p-row"><span>base fee, yearly</span><b class="num" data-v>$0</b></div>
+        <div class="p-row"><span>number-checking, yearly</span><b class="num" data-v>$0</b></div>
+        <div class="p-row p-total"><span>first year</span><b class="num" data-t>$0</b></div>
+      </div>
+      <p class="p-note">we earn only when you demonstrably do, capped at 3.2× the base.</p>
+      <div class="p-check" aria-live="polite"></div>
+    </article>
+  </div>
+
+  <p class="stamp-cap" id="stampCap">It just re-added that column in front of you. Checked by code, not vibes.</p>
+  <p class="p-foot rv" style="--d:.3s">Drag again, it will happily re-verify. Arithmetic is cheap. Judgment isn’t.</p>
+
+  <aside class="anno" id="anno2" data-anchor="input2-anchor">
+    <span>your answer · three prices re-done · one verified in code</span>
+    <svg viewBox="0 0 200 14" preserveAspectRatio="none" aria-hidden="true"><path d="M3 7 C 50 12, 80 3, 120 9 S 170 11, 197 6"/></svg>
+  </aside>
+  <span id="input2-anchor" style="grid-column:2"></span>
+</section>
+
+<hr class="rule">
+
+<!-- ============ 03 · THE RELEASE · approval was never required ============ -->
+<section class="act wash-wine" id="input3" aria-labelledby="h-input3">
+  <span class="gnum" aria-hidden="true">03<i class="yrs">yours</i></span>
+  <p class="kick rv"><span class="pulse"></span>Capability three ·&nbsp;verified&nbsp;release</p>
+  <h2 id="h-input3" class="rv" data-morph style="--d:.08s">Release the batch.</h2>
+  <p class="setup rv" style="--d:.14s">The 400 emails are ready: written in your tone, priced the way you chose, every number re-checked at send time. And here is the button <b>every other product would make you press.</b></p>
+
+  <div class="batch-stream rv" style="--d:.2s" aria-label="outbound verification stream">
+    <div class="stream" data-stream data-speed="10" data-pool="outbound"></div>
+  </div>
+
+  <div class="approve-wrap rv" style="--d:.26s">
+    <button class="approve" id="approveBtn">Approve all 400</button>
+    <span class="btn-ghost" id="btnGhost">( released · verified in code, steered by your inputs )</span>
+    <p class="approve-sub mono" id="approveSub">press it and see how much of this batch is already yours</p>
+  </div>
+
+  <div class="reply" id="reply" hidden>
+    <h3 class="rv" data-morph>Already checked. Already yours.</h3>
+    <p class="rv" style="--d:.15s">Every one of the 400 was verified in code: right person, right price, right claim. All before your cursor reached the button. <b>You</b> steered them, forty lines ago. <span id="gaveLine">The tone was yours. The price was yours. Every email carries both.</span></p>
+    <div class="reply-chips rv" style="--d:.25s" id="replyChips"></div>
+    <p class="axiom rv" style="--d:.35s">Approval is scaffolding. <em>Input is architecture.</em></p>
+    <p class="ship rv" style="--d:.45s"><span id="shipN">0</span>/400 shipped while you read this&nbsp;sentence&nbsp;✓</p>
+  </div>
+
+  <aside class="anno" id="anno3" data-anchor="reply">
+    <span>your press · logged as judgment, not permission</span>
+    <svg viewBox="0 0 200 14" preserveAspectRatio="none" aria-hidden="true"><path d="M3 8 C 30 13, 70 4, 110 8 S 175 4, 197 9"/></svg>
+  </aside>
+</section>
+
+<hr class="rule">
+
+<!-- ============ 04 · THE LEDGER ============ -->
+<section class="act wash-wine" id="ledger" aria-labelledby="h-ledger">
+  <span class="gnum" aria-hidden="true">04</span>
+  <p class="kick rv">The ledger</p>
+  <h2 id="h-ledger" class="rv" data-morph style="--d:.08s">Every session ends with a&nbsp;receipt.</h2>
+  <p class="setup rv" style="--d:.12s">This is what your dashboard looks like after a session: what the agent did, what you decided, and proof that <b>every number was verified</b>.</p>
+
+  <p class="given rv" style="--d:.14s" id="givenLine">You have given 0 of 3 inputs. The page is still waiting to become yours.</p>
+  <br>
+
+  <dl class="receipt rv" style="--d:.16s" id="receipt">
+    <h3>TEN<em class="pctm">%</em> · session receipt · live</h3>
+    <div class="r-row"><dt>agent</dt><dd><b id="rTasks">1,187</b> micro-tasks</dd></div>
+    <div class="r-row"><dt>you</dt><dd><i id="rInputs">0 of 3</i> inputs</dd></div>
+    <div class="r-row"><dt>tone</dt><dd id="rReg">pending</dd></div>
+    <div class="r-row"><dt>price</dt><dd id="rRisk">pending</dd></div>
+    <div class="r-row"><dt>approvals required</dt><dd>0</dd></div>
+    <div class="r-row r-hr"><dt>numbers verified</dt><dd><b>100%</b> · in code</dd></div>
+    <div class="r-row"><dt>input coverage</dt><dd id="rCover">your inputs touched <i>100%</i> of the output</dd></div>
+    <div class="r-row"><dt>wall-clock</dt><dd><b id="rClock">0:00</b> · check it against your watch</dd></div>
+    <div class="r-sign" id="rSign">yours, in exactly three strokes</div>
+  </dl>
+
+  <button class="stub rv" style="--d:.24s" id="stub" type="button" aria-label="tear off your stub and keep it">
+    <span class="stub-cut" aria-hidden="true">✂ tear here</span>
+    <span class="stub-row"><b>your ten percent</b><i>redeemable wherever judgment is scarce</i></span>
+  </button>
+</section>
+
+<hr class="rule">
+
+<!-- ============ 05 · WHAT YOU ARE BUYING ============ -->
+<section class="act wash-navy" id="value" aria-labelledby="h-value">
+  <span class="gnum" aria-hidden="true">05</span>
+  <p class="kick rv">The investment</p>
+  <h2 id="h-value" class="rv" data-morph style="--d:.08s">A head start your competitors can’t buy&nbsp;back.</h2>
+
+  <div class="v-grid wide rv" style="--d:.18s">
+    <article class="v-card">
+      <span class="vn">01</span>
+      <h3>The head start</h3>
+      <p>The companies that pull ahead this decade are the ones whose routine work <b>already runs on agents</b>. Every month your agents are working is a month the competition spends on manual ops. Invest now, and the gap <b>compounds in your favour</b>.</p>
+    </article>
+    <article class="v-card">
+      <span class="vn">02</span>
+      <h3>Output you can sign</h3>
+      <p>Every number <b>verified in code</b> before it reaches you. Every draft as consistent at 3am as at noon. Work that compounds instead of fatiguing.</p>
+    </article>
+    <article class="v-card">
+      <span class="vn">03</span>
+      <h3>Your team, promoted</h3>
+      <p>We take the ninety percent of every department that is <b>reading, drafting, reconciling and chasing</b>, so your specialists spend their days on the calls <b>only they can make</b>.</p>
+    </article>
+  </div>
+
+  <div class="closing rv" style="--d:.1s">
+    <h2 data-morph>It doesn’t guess.</h2>
+    <p class="verifies">It verifies.</p>
+  </div>
+
+  <div class="reach-cta rv" style="--d:.2s">
+    <a class="btn-talk js-talk" href="#">Let’s talk</a>
+    <span class="hero-meta">30 minutes · google meet · weekend slots</span>
+  </div>
+
+  <footer>
+    <p class="mono">TEN<em class="pctm">%</em> · thetenpercent.in · © 2026 · <a href="mailto:contact@thetenpercent.in">contact@thetenpercent.in</a> · <a href="tel:+918130235697">+91 81302 35697</a> | <a href="tel:+917551058524">+91 75510 58524</a><br>
+    <a href="index.html">home</a> · <a href="about.html">about</a></p>
+  </footer>
+</section>
+
+</main>
+
+<script>
+/* ================================================================
+   TEN% services · the demos. Adapted from the v2 single-page build.
+   ================================================================ */
+(() => {
+'use strict';
+const $  = (s,e=document)=>e.querySelector(s);
+const $$ = (s,e=document)=>[...e.querySelectorAll(s)];
+const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const fmt = new Intl.NumberFormat('en-US');
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+const rnd=(a,b)=>a+Math.random()*(b-a);
+const easeOut=t=>1-Math.pow(1-t,4);
+const FF=1;
+
+/* ---- session state ---- */
+const state={ register:null, regWord:null, risk:null, pressed:false, inputs:0 };
+
+/* easter egg: type v-e-r-i-f-y anywhere and the kernel stamps the whole page */
+let vbuf='';
+addEventListener('keydown',e=>{
+  if(/INPUT|TEXTAREA/.test(e.target.tagName)||e.key.length!==1)return;
+  vbuf=(vbuf+e.key.toLowerCase()).slice(-6);
+  if(vbuf!=='verify')return;
+  vbuf='';
+  if($('.vstamp'))return;
+  const v=document.createElement('div');
+  v.className='vstamp'; v.textContent='Verified'; v.setAttribute('aria-hidden','true');
+  document.body.appendChild(v);
+  flashToast('the kernel heard you');
+  setTimeout(()=>v.classList.add('bye'),1700);
+  setTimeout(()=>v.remove(),2600);
+});
+
+/* ---- the agent's task pool ---- */
+const TASKS=[
+ 'draft pricing v3','re-tone email #212','reconcile invoices q3','diff contract redlines',
+ 'rebuild funnel dashboard','verify vat on 38 line items','translate onboarding · de',
+ 'compress launch hero img','score 112 inbound leads','merge crm duplicates',
+ 'draft changelog v0.9.1','test checkout edge cases','re-add campaign budget',
+ 'index 4,210 support docs','tag churn-risk accounts','rewrite faq entry 44',
+ 'balance ad spend · week 27','draft board note §2','sanity-check revenue model',
+ 'rotate api credentials','file gst annexure b','sequence 60 follow-ups',
+ 'proof-read pricing page','re-check ad cost per sale','verify 400 recipients',
+ 'draft press boilerplate','re-run margin analysis','patch webhook retries',
+ 'summarise 31 sales calls','audit permissions matrix','schedule 12 social posts',
+ 'normalise vendor names','draft renewal terms','check sla percentiles',
+ 'refresh competitor table','re-price enterprise tier','verify wire details ×2',
+ 'archive stale branches','tune spam-score to 0.3','draft launch runbook',
+ 'cross-check inventory','re-add payroll journal','trim onboarding to 4 steps',
+ 'validate promo codes','sync ledger to erp','draft apology for #109',
+ 'time the slowest pages','re-verify tax rules','stage rollout at 5%'
+];
+const OUTBOUND=[]; for(let i=0;i<40;i++) OUTBOUND.push('email #0'+(180+i*6)+' · verified');
+
+/* ---- session odometer (headless, feeds the receipt) ---- */
+const counter={ v:1187, bump(n=1){ this.v+=n; } };
+
+/* ---- streams: visibility-gated marquee columns ---- */
+const streams=[];
+function buildStream(el){
+  const pool = el.dataset.pool==='outbound' ? OUTBOUND : TASKS;
+  const track=document.createElement('div');
+  track.className='s-track';
+  el.appendChild(track);
+  const h=el.clientHeight||300;
+  const n=Math.ceil(h/24)+6;
+  for(let i=0;i<n;i++) track.appendChild(makeItem(pool, Math.random()<.58));
+  const s={el,track,pool,y:0,speed:+el.dataset.speed||9,visible:false,
+    acc:0,completeEvery:rnd(1600,2400)};
+  streams.push(s);
+  return s;
+}
+function makeItem(pool,done){
+  const d=document.createElement('div');
+  d.className='si '+(done?'done':'pend');
+  d.innerHTML=`<span class="sc">${done?'✓':'·'}</span><span class="st"></span>`;
+  d.lastChild.textContent=pool[Math.floor(Math.random()*pool.length)];
+  return d;
+}
+function completeOne(s){
+  const p=$$('.si.pend',s.track)[0];
+  if(!p) return;
+  p.classList.remove('pend'); p.classList.add('done');
+  p.firstChild.textContent='✓';
+}
+const io=new IntersectionObserver(es=>es.forEach(e=>{
+  const s=streams.find(x=>x.el===e.target);
+  if(s) s.visible=e.isIntersecting;
+}),{threshold:.05});
+$$('[data-stream]').forEach(el=>{ buildStream(el); io.observe(el); });
+
+let last=performance.now();
+function loop(t){
+  const dt=Math.min(50,t-last); last=t;
+  if(!document.hidden){
+    for(const s of streams){
+      if(!s.visible) continue;
+      s.y+=s.speed*dt/1000*FF;
+      const first=s.track.firstElementChild;
+      if(first){
+        const h0=first.offsetHeight;
+        if(s.y>=h0){
+          s.y-=h0;
+          first.className='si pend';
+          first.firstChild.textContent='·';
+          first.lastChild.firstChild.textContent=s.pool[Math.floor(Math.random()*s.pool.length)];
+          s.track.appendChild(first);
+        }
+      }
+      s.track.style.transform=`translateY(${-s.y}px)`;
+      s.acc+=dt*FF;
+      if(s.acc>=s.completeEvery){ s.acc=0; s.completeEvery=rnd(1600,2600); completeOne(s); }
+    }
+  }
+  requestAnimationFrame(loop);
+}
+if(!RM) requestAnimationFrame(loop);
+
+/* ---- the weight spring for data-morph headings ---- */
+const REGS={
+  BOLD:   {wght:830, ls:'-0.035em', ff:'', fs:'normal'},
+  PRECISE:{wght:400, ls:'.06em',    ff:'var(--mono)',  fs:'normal'},
+  WARM:   {wght:600, ls:'0',        ff:'var(--serif)', fs:'italic'},
+};
+const morphEls=$$('[data-morph]');
+const ax={wght:740}, tgt={wght:740};
+let settled=false;
+function axesFrame(){
+  ax.wght+=(tgt.wght-ax.wght)*.07;
+  const moving=Math.abs(tgt.wght-ax.wght)>.3;
+  if(moving||!settled){
+    for(const el of morphEls) el.style.fontVariationSettings=`'wght' ${ax.wght.toFixed(1)}`;
+    if(!moving) settled=true;
+  }
+  if(moving) settled=false;
+  requestAnimationFrame(axesFrame);
+}
+if(!RM) requestAnimationFrame(axesFrame);
+
+/* ---- character-by-character redraft ---- */
+function retype(el,text){
+  if(!el) return Promise.resolve();
+  if(RM){ el.textContent=text; el.classList.remove('typing','cursor'); return Promise.resolve(); }
+  const token=(el._tk=(el._tk||0)+1);
+  el.classList.add('typing'); el.classList.remove('cursor');
+  return new Promise(res=>{
+    const del=()=>{
+      if(el._tk!==token)return;
+      const c=el.textContent;
+      if(c.length){ el.textContent=c.slice(0,-1); setTimeout(del,(7+Math.random()*10)/FF); }
+      else setTimeout(type,160/FF);
+    };
+    let i=0;
+    const type=()=>{
+      if(el._tk!==token)return;
+      if(i<text.length){
+        el.textContent=text.slice(0,++i);
+        const ch=text[i-1];
+        setTimeout(type,(ch===' '?14:20+Math.random()*30)/FF+(Math.random()<.02?90:0));
+      } else { el.classList.remove('typing'); res(); }
+    };
+    del();
+  });
+}
+
+/* ---- register templates ---- */
+const T={
+  adline:{
+    BOLD:'SHIP LOUD. VERIFY EVERYTHING.',
+    PRECISE:'Every claim checked. Every number re-added. Nothing shipped on vibes.',
+    WARM:'It works all night, so your mornings stay yours.',
+    CUSTOM:w=>`Your word “${w}”, applied 214 times and verified once each.`
+  },
+  draftEnd:{
+    BOLD:'We built the kind of launch you can hear from the next room.',
+    PRECISE:'We built it to re-add its own arithmetic every night at 02:00.',
+    WARM:'We built it so your Tuesday finally feels like a Saturday.',
+    CUSTOM:w=>`We built every line of it to sound exactly like your word: ${w}.`
+  }
+};
+const pick=(slot)=> state.register==='CUSTOM' ? T[slot].CUSTOM(state.regWord) : T[slot][state.register];
+
+function hashWord(w){let h=0;for(const c of w)h=(h*31+c.charCodeAt(0))>>>0;return h;}
+
+async function setRegister(name,word){
+  state.register=name; state.regWord=word||name;
+  if(!state._reg1){ state._reg1=true; state.inputs++; }
+  updateGiven();
+  $$('.chip').forEach(c=>c.classList.toggle('sel',c.dataset.reg===name));
+  $('#regForm').classList.toggle('applied',name==='CUSTOM');
+  const a=name==='CUSTOM'
+    ?{wght:480+(hashWord(word)%400),ls:((hashWord(word)>>3)%70-35)/1000+'em',ff:'',fs:'normal'}
+    :REGS[name];
+  tgt.wght=a.wght;
+  for(const el of morphEls){
+    el.style.letterSpacing=a.ls;
+    el.style.fontFamily=a.ff;
+    el.style.fontStyle=a.fs;
+  }
+  $('#draftState').textContent='⏺ re-drafting';
+  const ds=$('#draftStatus'); ds.classList.add('on');
+  ds.innerHTML=`tone locked: <b>${state.regWord.toUpperCase()}</b> · spreading…`;
+  const board=$('#board1'); board.classList.add('live');
+  $('#boardLabel').textContent='watch your word travel through the work';
+  await retype($('#draftTail'),pick('draftEnd'));
+  $('#draftState').textContent='✓ drafted';
+  await retype($('#adline'),pick('adline'));
+  runPropagation();
+  showAnno('anno1');
+  flashToast('+214 drafts re-written in your tone');
+}
+
+function runPropagation(){
+  const n=$('#propN'),bar=$('#propBar');
+  const t0=performance.now(),D=RM?1:2200;
+  (function step(t){
+    const k=clamp((t-t0)/D,0,1),v=k<1?Math.min(213,Math.round(easeOut(k)*214)):214;
+    n.textContent=v; bar.style.setProperty('--p',easeOut(k));
+    if(k<1) requestAnimationFrame(step);
+    else {
+      $('#propLabel').textContent='of 214 drafts re-written ✓ in your tone'; counter.bump(214);
+      $('#draftStatus').innerHTML=`tone locked: <b>${state.regWord.toUpperCase()}</b> · 214/214 re-drafted ✓`;
+      $('#toneCap').classList.add('on');
+    }
+  })(t0);
+}
+
+$$('.chip').forEach(c=>c.addEventListener('click',()=>setRegister(c.dataset.reg)));
+$('#regForm').addEventListener('submit',e=>{
+  e.preventDefault();
+  const w=$('#regInput').value.trim().slice(0,16);
+  if(w) setRegister('CUSTOM',w.toLowerCase());
+});
+
+/* ---- the paused draft types itself on first view ---- */
+const draftIO=new IntersectionObserver(es=>{
+  if(!es[0].isIntersecting) return;
+  draftIO.disconnect();
+  const el=$('#draftFixed'),full=el.textContent;
+  const pause=()=>{ if(!state.register) $('#draftState').textContent='⏸ paused'; $('#draftStatus').classList.add('on'); };
+  if(RM){ pause(); return; }
+  el.textContent='';
+  let i=0;
+  (function type(){
+    if(state.register) { el.textContent=full; return; }
+    if(i<full.length){ el.textContent=full.slice(0,i+=2); setTimeout(type,11/FF); }
+    else pause();
+  })();
+},{threshold:.35});
+draftIO.observe($('#input1'));
+
+/* ---- margin annotations ---- */
+function showAnno(id){
+  const a=$('#'+id); if(!a||a.classList.contains('show'))return;
+  const p=$('path',a);
+  p.style.setProperty('--len',p.getTotalLength().toFixed(1));
+  requestAnimationFrame(()=>a.classList.add('show'));
+}
+function placeAnnos(){
+  if(innerWidth<=1150) return;
+  $$('.anno').forEach(a=>{
+    const anchor=document.getElementById(a.dataset.anchor);
+    if(anchor) a.style.top=(anchor.offsetTop+8)+'px';
+  });
+}
+addEventListener('resize',placeAnnos);
+addEventListener('load',placeAnnos);
+
+/* ---- the constraint: three magnetic detents ---- */
+const risk=$('#risk');
+const DETENTS=[
+  {v:12,k:'A',name:'FIXED PRICE'},
+  {v:50,k:'B',name:'PAY PER USE'},
+  {v:88,k:'C',name:'REVENUE SHARE'},
+];
+const REACH=17;
+const nearestDet=v=>DETENTS.reduce((a,d)=>Math.abs(d.v-v)<Math.abs(a.v-v)?d:a);
+const r20=v=>Math.round(v/20)*20;
+const PRICE={
+  A:r=>[r20(12*(12800-46*r)), r20(2400+130*r), r20(8400-34*r)],
+  B:r=>[r20(88000+180*r), r20(12*(3800-18*r)), r20(3600+22*r)],
+  C:r=>[r20(64000+520*r), r20(12*(2600-14*r)), r20(5200+36*r)],
+};
+const cards=Object.fromEntries($$('.p-card').map(c=>[c.dataset.card,c]));
+function tweenNum(el,to,dur=220){
+  const from=el._v??to;
+  el._v=to;
+  if(RM||dur<=0||from===to){ el.textContent='$'+fmt.format(to); return; }
+  const t0=performance.now();
+  const tk=(el._nt=(el._nt||0)+1);
+  (function f(t){
+    if(el._nt!==tk)return;
+    const k=clamp((t-t0)/dur,0,1);
+    el.textContent='$'+fmt.format(Math.round(from+(to-from)*easeOut(k)));
+    if(k<1)requestAnimationFrame(f);
+  })(t0);
+}
+function recommend(r){ return r<34?'A':r<67?'B':'C'; }
+function reflow(r,dur){
+  for(const k of 'ABC'){
+    const vals=PRICE[k](r), card=cards[k];
+    $$('[data-v]',card).forEach((el,i)=>tweenNum(el,vals[i],dur));
+    tweenNum($('[data-t]',card),vals[0]+vals[1]+vals[2],dur);
+    card.classList.toggle('rec',recommend(r)===k);
+    card.classList.remove('stamped');
+    $('.p-check',card).textContent='';
+  }
+}
+let addTk=0, animTk=0;
+function paintRisk(v,det,settledNow){
+  risk.style.setProperty('--p',v);
+  const rr=$('#riskRead');
+  rr.textContent=det.name;
+  rr.classList.toggle('settled',!!settledNow);
+  risk.setAttribute('aria-valuetext',det.name);
+  $$('.tick').forEach(tk=>tk.classList.toggle('on',settledNow&&tk.dataset.k===det.k));
+}
+risk.addEventListener('input',()=>{
+  animTk++;
+  let v=+risk.value;
+  const d=nearestDet(v), drift=v-d.v;
+  if(Math.abs(drift)<REACH){
+    v=d.v+drift*Math.pow(Math.abs(drift)/REACH,2);
+    risk.value=Math.round(v);
+  }
+  const now=+risk.value, nd=nearestDet(now);
+  paintRisk(now,nd,false);
+  reflow(now,160);
+  addTk++;
+});
+function settleTo(det){
+  const from=+risk.value,to=det.v,t0=performance.now(),D=RM?1:420,tk=++animTk;
+  (function f(t){
+    if(tk!==animTk)return;
+    const k=clamp((t-t0)/D,0,1);
+    risk.value=Math.round(from+(to-from)*easeOut(k));
+    paintRisk(+risk.value,det,k>=1);
+    if(k<1){ reflow(+risk.value,80); requestAnimationFrame(f); }
+    else{
+      reflow(det.v,160);
+      state.risk=det.name;
+      if(!state._reg2){ state._reg2=true; state.inputs++; }
+      updateGiven();
+      const tk2=++addTk;
+      setTimeout(()=>{ if(tk2===addTk) reAdd(det.k,det.v,tk2); },320);
+    }
+  })(t0);
+}
+risk.addEventListener('change',()=>settleTo(nearestDet(+risk.value)));
+risk.addEventListener('keydown',e=>{
+  const i=DETENTS.indexOf(nearestDet(+risk.value));
+  let j=null;
+  if(e.key==='ArrowLeft'||e.key==='ArrowDown') j=Math.max(0,i-1);
+  else if(e.key==='ArrowRight'||e.key==='ArrowUp') j=Math.min(2,i+1);
+  else if(e.key==='Home') j=0;
+  else if(e.key==='End') j=2;
+  if(j===null) return;
+  e.preventDefault();
+  settleTo(DETENTS[j]);
+});
+async function reAdd(k,r,tk){
+  const card=cards[k], vals=PRICE[k](r), check=$('.p-check',card);
+  const rows=$$('.p-row:not(.p-total)',card);
+  let sum=0;
+  check.textContent='deterministic check · re-adding column…';
+  await wait(RM?0:420);
+  for(let i=0;i<3;i++){
+    if(tk!==addTk)return;
+    rows[i].classList.remove('flash'); void rows[i].offsetWidth; rows[i].classList.add('flash');
+    const from=sum; sum+=vals[i];
+    await tickSum(check,from,sum,RM?0:360,tk);
+    await wait(RM?0:140);
+  }
+  if(tk!==addTk)return;
+  check.textContent=`= $${fmt.format(sum)} / first year ✓ matches`;
+  await wait(RM?0:220);
+  if(tk!==addTk)return;
+  card.classList.add('stamped');
+  $('#stampCap').classList.add('on');
+  counter.bump(3);
+  showAnno('anno2');
+}
+function tickSum(el,from,to,dur,tk){
+  return new Promise(res=>{
+    if(dur<=0){ el.textContent=`re-adding · $${fmt.format(to)}`; return res(); }
+    const t0=performance.now();
+    (function f(t){
+      if(tk!==addTk)return res();
+      const kk=clamp((t-t0)/dur,0,1);
+      el.textContent=`re-adding · $${fmt.format(Math.round(from+(to-from)*easeOut(kk)))}`;
+      kk<1?requestAnimationFrame(f):res();
+    })(t0);
+  });
+}
+const wait=ms=>new Promise(r=>setTimeout(r,ms));
+paintRisk(50,DETENTS[1],false);
+reflow(50,0);
+
+/* ---- the refusal: a button that crumbles to dust ---- */
+const approveBtn=$('#approveBtn');
+approveBtn.addEventListener('click',async()=>{
+  if(state.pressed)return; state.pressed=true;
+  if(!state._reg3){ state._reg3=true; state.inputs++; }
+  updateGiven();
+  $('#approveSub').textContent='';
+  if(RM){
+    approveBtn.style.opacity='0'; approveBtn.style.filter='blur(6px)';
+    setTimeout(finishRefusal,80);
+    return;
+  }
+  await document.fonts.ready;
+  crumble(approveBtn);
+  setTimeout(finishRefusal,900);
+});
+function crumble(btn){
+  const cs=getComputedStyle(document.documentElement);
+  const inkC=cs.getPropertyValue('--ink').trim()||'#f1ede2';
+  const bgC=cs.getPropertyValue('--bg').trim()||'#0a0a0d';
+  const r=btn.getBoundingClientRect();
+  const padX=90,padT=30,fall=300;
+  const cv=document.createElement('canvas');
+  cv.className='dust';
+  cv.width=Math.ceil(r.width+padX*2); cv.height=Math.ceil(r.height+padT+fall);
+  cv.style.left=(r.left+scrollX-padX)+'px'; cv.style.top=(r.top+scrollY-padT)+'px';
+  cv.style.width=cv.width+'px'; cv.style.height=cv.height+'px';
+  document.body.appendChild(cv);
+  const off=document.createElement('canvas');
+  off.width=Math.ceil(r.width); off.height=Math.ceil(r.height);
+  const o=off.getContext('2d');
+  o.fillStyle=inkC;
+  const rad=4;
+  o.beginPath(); o.roundRect(0,0,off.width,off.height,rad); o.fill();
+  o.fillStyle=bgC;
+  const fs=parseFloat(getComputedStyle(btn).fontSize);
+  o.font=`800 ${fs}px 'Inter Tight', sans-serif`;
+  o.textAlign='center'; o.textBaseline='middle';
+  o.fillText(btn.textContent.toUpperCase(),off.width/2,off.height/2+1);
+  const img=o.getImageData(0,0,off.width,off.height).data;
+  const isDark=!document.documentElement.hasAttribute('data-theme');
+  const P=[],S=3;
+  for(let y=0;y<off.height;y+=S)for(let x=0;x<off.width;x+=S){
+    const i=(y*off.width+x)*4;
+    if(img[i+3]>100) P.push({
+      x:x+padX,y:y+padT,
+      c:(isDark?img[i]>120:img[i]<120)?inkC:'#3d55c0',
+      vx:rnd(-.5,.7),vy:rnd(-1.6,-.2),
+      d:(x/off.width)*620+rnd(0,150), a:1, live:false
+    });
+  }
+  btn.style.visibility='hidden';
+  const ctx=cv.getContext('2d');
+  const t0=performance.now();
+  (function f(t){
+    const el=t-t0;
+    ctx.clearRect(0,0,cv.width,cv.height);
+    let alive=false;
+    for(const p of P){
+      if(el<p.d){ ctx.fillStyle=p.c; ctx.fillRect(p.x,p.y,S,S); alive=true; continue; }
+      if(!p.live){ p.live=true; }
+      p.x+=p.vx; p.y+=p.vy; p.vy+=.16; p.vx+=.004;
+      p.a-=.016;
+      if(p.a>0&&p.y<cv.height){
+        alive=true;
+        ctx.globalAlpha=Math.max(0,p.a);
+        ctx.fillStyle=p.c; ctx.fillRect(p.x,p.y,S-1,S-1);
+        ctx.globalAlpha=1;
+      }
+    }
+    if(alive&&el<4200) requestAnimationFrame(f);
+    else cv.remove();
+  })(t0);
+}
+function finishRefusal(){
+  $('.approve-wrap').classList.add('gone');
+  const reply=$('#reply');
+  reply.hidden=false;
+  const chips=[];
+  chips.push(state._reg1?`input 1 · tone: ${state.regWord.toUpperCase()}`:'input 1 · skipped, default held');
+  chips.push(state._reg2?`input 2 · price: ${state.risk}`:'input 2 · skipped, default held');
+  chips.push('input 3 · judgment, received');
+  $('#replyChips').innerHTML=chips.map(c=>`<span class="rchip"></span>`).join('');
+  $$('#replyChips .rchip').forEach((el,i)=>el.textContent=chips[i]);
+  if(!state._reg1&&!state._reg2)
+    $('#gaveLine').textContent='Give the two inputs above and every one of them becomes yours. It wants your word, not your permission.';
+  else if(!state._reg1||!state._reg2)
+    $('#gaveLine').textContent='One input of yours already reached all 400. The other is still open above, and it wants your word, not your permission.';
+  requestAnimationFrame(()=>$$('#reply .rv').forEach(el=>el.classList.add('in')));
+  ['anno1','anno2'].forEach(id=>{const a=$('#'+id); if(a.classList.contains('show')){a.classList.remove('glow');void a.offsetWidth;a.classList.add('glow');}});
+  placeAnnos();
+  showAnno('anno3');
+  const n=$('#shipN'),t0=performance.now(),D=RM?1:1800;
+  (function f(t){
+    const k=clamp((t-t0)/D,0,1);
+    n.textContent=Math.round(easeOut(k)*400);
+    if(k<1)requestAnimationFrame(f); else counter.bump(400);
+  })(t0);
+}
+
+/* ---- live "you have given N of 3" line + receipt ---- */
+function updateGiven(){
+  const n=state.inputs;
+  [['#input1',state._reg1],['#input2',state._reg2],['#input3',state._reg3]].forEach(([id,got])=>{
+    const g=$(id+' .gnum'); if(g) g.classList.toggle('yours',!!got);
+  });
+  $('#givenLine').textContent = n===0
+    ? 'You have given 0 of 3 inputs. The page is still waiting to become yours.'
+    : n===3 ? 'You have given all 3. Every asset downstream carries your fingerprints.'
+    : `You have given ${n} of 3 inputs. The page is already different because of it.`;
+  $('#rInputs').textContent=`${n} of 3`;
+  $('#rReg').innerHTML=state._reg1?`<i>${state.regWord.toUpperCase()}</i> · yours`:'default held';
+  $('#rRisk').innerHTML=state._reg2?`<i>${state.risk}</i> · yours`:'default held';
+  $('#rCover').innerHTML=n>0?`your ${n===3?'3 inputs':n+' input'+(n>1?'s':'')} touched <i>100%</i> of the output`:`<i>3</i> inputs waiting for you above`;
+  $('#rSign').classList.toggle('on',n===3);
+}
+updateGiven();
+const recIO=new IntersectionObserver(es=>{
+  if(!es[0].isIntersecting)return;
+  recIO.disconnect();
+  const el=$('#rTasks'),to=counter.v,from=Math.max(0,to-260),t0=performance.now(),D=RM?1:1400;
+  (function f(t){
+    const k=clamp((t-t0)/D,0,1);
+    el.textContent=fmt.format(Math.round(from+(to-from)*easeOut(k)));
+    if(k<1)requestAnimationFrame(f);
+  })(t0);
+},{threshold:.4});
+recIO.observe($('#receipt'));
+
+/* ---- the tear-off stub ---- */
+$('#stub').addEventListener('click',()=>{
+  const s=$('#stub');
+  if(s.classList.contains('torn'))return;
+  s.classList.add('torn'); s.setAttribute('aria-disabled','true');
+  flashToast('stub torn · the ten percent goes with you');
+});
+
+/* ---- the wall-clock ---- */
+const rClock=$('#rClock'),t0Clock=Date.now();
+setInterval(()=>{
+  const s=Math.floor((Date.now()-t0Clock)/1000);
+  rClock.textContent=`${Math.floor(s/60)}:${String(s%60).padStart(2,'0')}`;
+},1000);
+
+})();
+</script>
+</body>
+</html>

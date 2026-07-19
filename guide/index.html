@@ -1,0 +1,242 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>How TEN% was built</title>
+<meta name="description" content="The making-of, told gently: how an autonomous agent designed, critiqued, and redesigned a page that refuses your approval.">
+<meta name="theme-color" content="#0a0a0d">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%230a0a0d'/%3E%3Ccircle cx='32' cy='32' r='13' fill='%238e2445'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:ital,wght@0,100..900;1,100..900&family=Source+Serif+4:ital,opsz,wght@0,8..60,200..900;1,8..60,200..900&family=Fragment+Mono:ital@0;1&display=swap" rel="stylesheet">
+<style>
+@font-face{font-family:'Decima Display';src:url('../decima-display.woff2') format('woff2');font-weight:100 900;font-style:normal;font-display:swap}
+@font-face{font-family:'Decima Text';src:url('../decima-text.woff2') format('woff2');font-weight:100 900;font-style:normal;font-display:swap}
+:root{
+  --bg:#0a0a0d; --panel:#0f0f16; --ink:#f1ede2; --dim:#8f8b80;
+  --navy:#2a3f9e; --agent:#8fa2f2; --wine:#8e2445; --halo:#b8485f; --halo-deep:#9c3349;
+  --hair:rgba(241,237,226,.12);
+  --head:'Inter Tight','Helvetica Neue',Arial,sans-serif;
+  --didone:'Decima Text','Didot',serif;
+  --serif:'Source Serif 4',Georgia,serif;
+  --mono:'Fragment Mono',ui-monospace,Menlo,monospace;
+  --ease:cubic-bezier(.22,1,.36,1);
+  --colw:min(66ch,calc(100vw - 2.8rem));
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{overflow-x:clip}
+body{background:var(--bg);color:var(--ink);font-family:var(--serif);font-optical-sizing:auto;
+  font-size:clamp(16px,1.02vw,18px);line-height:1.74;-webkit-font-smoothing:antialiased}
+::selection{background:var(--ink);color:var(--bg)}
+:focus-visible{outline:2px solid var(--halo);outline-offset:3px}
+a{color:inherit;text-decoration:underline;text-decoration-color:rgba(184,72,95,.6);text-underline-offset:3px;transition:color .4s var(--ease)}
+a:hover{color:var(--halo)}
+.pctm{font-family:var(--didone);font-style:normal;font-weight:400;color:var(--halo)}
+.grain{position:fixed;inset:0;z-index:90;pointer-events:none;mix-blend-mode:screen;opacity:.05;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)'/%3E%3C/svg%3E")}
+.mono{font-family:var(--mono);font-size:.68rem;letter-spacing:.1em;text-transform:uppercase}
+main{display:grid;grid-template-columns:minmax(1.4rem,1fr) var(--colw) minmax(1.4rem,1fr);padding:6.5rem 0 4rem}
+main>*{grid-column:2;min-width:0}
+.bar{position:fixed;inset:0 0 auto 0;z-index:80;display:flex;align-items:center;gap:1.4rem;height:50px;
+  padding:0 clamp(.9rem,2.4vw,2rem);background:rgba(10,10,13,.78);
+  backdrop-filter:blur(8px);border-bottom:1px solid var(--hair)}
+.bar-brand{font-family:var(--head);font-weight:800;letter-spacing:.06em;font-size:.94rem;white-space:nowrap}
+.bar .mono{color:var(--dim);white-space:nowrap}
+.bar a{margin-left:auto;white-space:nowrap}
+@media (max-width:560px){.bar>span.mono{display:none}}
+.kick{font-family:var(--didone);font-weight:600;font-size:clamp(.7rem,.9vw,.8rem);
+  letter-spacing:.42em;text-transform:uppercase;color:var(--dim);margin:3.6rem 0 1.2rem}
+h1{font-family:var(--head);font-weight:800;
+  font-size:clamp(2.6rem,8vw,5.6rem);line-height:.95;letter-spacing:-.035em;margin-bottom:1.2rem;
+  text-shadow:0 0 20px rgba(184,72,95,.17),0 0 64px rgba(142,36,69,.11)}
+h1 em{display:block;font:italic 440 clamp(1rem,2vw,1.3rem)/1.5 var(--serif);
+  letter-spacing:0;text-transform:none;color:var(--dim);margin-top:1rem;text-shadow:none}
+h2{font-family:var(--head);font-weight:700;
+  font-size:clamp(1.5rem,3.2vw,2.2rem);letter-spacing:-.025em;line-height:1.05;margin-bottom:1.1rem}
+p{max-width:66ch;margin-bottom:1.25rem}
+p b{font-weight:600}
+.lede{font:400 clamp(1.12rem,1.8vw,1.32rem)/1.7 var(--serif);max-width:54ch;color:var(--ink)}
+hr{border:0;border-top:1px solid var(--hair);margin:3.6rem 0}
+.stop{margin:2.2rem 0;padding-left:1.4rem;border-left:1px solid var(--hair)}
+.stop h3{font-family:var(--head);font-weight:700;font-size:1.12rem;letter-spacing:-.01em;margin-bottom:.5rem}
+.stop h3 .n{font-family:var(--didone);font-weight:600;font-size:.7em;letter-spacing:.3em;
+  text-transform:uppercase;color:var(--dim);margin-right:.8em}
+.stop p{color:var(--dim);font-size:.98rem}
+.stop p i{color:var(--ink);font-style:italic}
+pre{border:1px solid var(--hair);border-left:3px solid var(--navy);
+  padding:1.1rem 1.3rem;overflow-x:auto;margin:1.2rem 0 1.8rem;max-width:100%;
+  /* scroll shadows: the right edge hints when a line runs past the fold */
+  background:
+    linear-gradient(90deg,var(--panel) 33%,rgba(15,15,22,0)) left center,
+    linear-gradient(270deg,var(--panel) 33%,rgba(15,15,22,0)) right center,
+    radial-gradient(farthest-side at 0 50%,rgba(0,0,0,.55),transparent) left center,
+    radial-gradient(farthest-side at 100% 50%,rgba(0,0,0,.55),transparent) right center,
+    var(--panel);
+  background-repeat:no-repeat;
+  background-size:44px 100%,44px 100%,15px 100%,15px 100%,auto;
+  background-attachment:local,local,scroll,scroll,scroll}
+@media (max-width:560px){pre{font-size:.62rem;padding:.9rem .8rem}}
+code{font-family:var(--mono);font-size:.72rem;line-height:1.8;color:rgba(241,237,226,.85)}
+pre code .c{color:var(--dim)}
+.pass{background:var(--panel);border:1px solid var(--hair);padding:1.5rem 1.6rem;margin:1.4rem 0}
+.pass h3{font-family:var(--didone);font-weight:600;font-size:.7rem;letter-spacing:.34em;
+  text-transform:uppercase;color:var(--dim);margin-bottom:1rem}
+.pass ul{margin:0 0 .4rem 1.1rem}
+.pass li{margin-bottom:.5rem;font-size:.95rem;color:var(--dim)}
+.pass li b{color:var(--ink);font-weight:600}
+.pass .up{font:italic 440 .95rem/1.6 var(--serif);color:var(--ink);margin-top:.9rem;
+  text-shadow:0 0 14px rgba(241,237,226,.18)}
+.palette{display:flex;flex-wrap:wrap;gap:.8rem;margin:1.6rem 0 2rem}
+.sw{width:124px;border:1px solid var(--hair)}
+@media (max-width:560px){
+  .sw{flex:1 1 40%}
+  .sw:last-child{flex-basis:100%}
+  .sw:last-child i{height:14px}  /* the hairline ink drawn as a literal hairline */
+}
+.sw i{display:block;height:56px}
+.sw span{display:block;font-family:var(--mono);font-size:.58rem;letter-spacing:.06em;padding:.55em .6em;text-transform:uppercase;color:var(--dim)}
+.inks p{color:var(--dim)}
+.inks b.agent{color:var(--agent);font-weight:500}
+.inks b.you{color:var(--ink);font-weight:500;text-shadow:0 0 12px rgba(241,237,226,.3)}
+.inks b.aura{color:var(--halo);font-weight:500}
+footer{margin-top:4.5rem;border-top:1px solid var(--hair);padding-top:1.8rem;color:var(--dim)}
+@media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="grain" aria-hidden="true"></div>
+<header class="bar">
+  <span class="bar-brand">TEN<em class="pctm">%</em></span>
+  <span class="mono">the making-of</span>
+  <a href="../" class="mono">← back to the session</a>
+</header>
+
+<main>
+<p class="kick">Guide · how this was built</p>
+<h1>The making of TEN<em class="pctm">%</em><em>A page that refuses your approval, explained gently by the thing that built it.</em></h1>
+<p class="lede">One HTML file. No frameworks, no photographs, no stock anything. The typography is the graphics, and you are cast as the specialist. It was designed and built autonomously by Claude Fable 5, then redesigned twice: once when its founders asked for the lights turned low, and again when ordinary readers asked it to say, in plain words, what it actually does.</p>
+
+<hr>
+
+<h2>How it was made</h2>
+<p>Before writing a line of this page, the agent studied <b>fifty-five award-calibre websites</b>, not to copy any of them, but to learn what separates work that feels inevitable from work that feels generated. Out of that study it wrote itself a small constitution of taste: real copy only, one or two bespoke motion curves for everything that moves, type chosen on purpose, no default anything.</p>
+<p>Then it built the page. And then it did the unusual part: it <b>looked at its own pixels</b>. It photographed the finished page at desktop and phone sizes, at every scroll depth, in every interactive state, and critiqued the screenshots the way a hostile art director would. Rhythm, alignment, contrast, a line that breaks in the wrong place, a note that collides with the machinery behind it. Everything found was fixed.</p>
+<p>One more rule kept the polish from going bland: at the end of every critique pass, the agent had to <b>add one deliberate flourish</b>, a small pleasure that wasn’t strictly necessary. Fix, then embellish. It did this three times over, and then three times again when the redesign came.</p>
+<p>The redesign itself was founder feedback, applied the way feedback should be: the bones stayed, every input still works, the button still crumbles, but the zine became an annual report. Darker, quieter, more space. Glow only where glow is earned.</p>
+
+<hr>
+
+<h2>Why it’s shaped this way</h2>
+<p>The page stops three times to ask you for something. That isn’t an interaction gimmick. It is the entire argument, staged. The system it demonstrates absorbs about ninety percent of the work of every department at once, and routes the remaining ten percent, the judgment calls, to the person whose judgment is actually worth something. On this page, that person is you.</p>
+<p>Then comes the part everyone remembers. At the end, the page offers you the one control every other system treats as sacred, an approve button, and when you press it, the button <b>crumbles into dust</b>. The work had already been verified, in code, before your cursor arrived. The page never needed your permission. It needed your <i>voice</i>, three sections earlier, and if you gave it, everything downstream carries it.</p>
+<p><b>Approval is scaffolding. Input is architecture.</b> You could read that sentence in a deck and forget it by lunch. The page makes you feel it instead: the disappointment of the crumbling button teaches the thesis better than a paragraph ever could.</p>
+
+<div class="stop">
+<h3><span class="n">Stop one</span>The tone</h3>
+<p>The agent pauses mid-draft, mid-sentence, and asks how your company should sound. Pick a word, or type your own; watch it travel through two hundred and fourteen drafts while you stand there. <i>Your word, everywhere.</i></p>
+</div>
+<div class="stop">
+<h3><span class="n">Stop two</span>The price you’d sleep at</h3>
+<p>Three prices, and a slider that is magnetized to three honest positions: fixed price, pay per use, revenue share. The thumb leans toward the nearest certainty and settles onto it; the machine can defend any of the three, but it refuses to want the risk for you. When you choose, it re-adds the arithmetic in front of you and stamps the column <i>verified</i>.</p>
+</div>
+<div class="stop">
+<h3><span class="n">Stop three</span>The judgment</h3>
+<p>The button. The dust. The receipt at the bottom prints what the session cost you, three inputs and zero approvals, and lets you tear off a stub for your ten percent. One number on the receipt, the wall-clock, you can check against your own watch.</p>
+</div>
+
+<hr>
+
+<h2>The look, and why it’s quiet</h2>
+
+<div class="palette" aria-label="palette">
+  <div class="sw"><i style="background:#0a0a0d"></i><span>near-black 0a0a0d</span></div>
+  <div class="sw"><i style="background:#0f0f16"></i><span>panel 0f0f16</span></div>
+  <div class="sw"><i style="background:#f1ede2"></i><span>ivory · you</span></div>
+  <div class="sw"><i style="background:#2a3f9e"></i><span>navy · the agent</span></div>
+  <div class="sw"><i style="background:#8e2445"></i><span>burgundy · the aura</span></div>
+  <div class="sw"><i style="background:#9c3349"></i><span>9c3349 · deep glow</span></div>
+  <div class="sw"><i style="background:#b8485f"></i><span>b8485f · wine halo</span></div>
+  <div class="sw"><i style="background:#8f8b80"></i><span>dim 8f8b80</span></div>
+  <div class="sw"><i style="background:rgba(241,237,226,.12);height:56px"></i><span>hairline · 12% ivory</span></div>
+</div>
+
+<div class="inks">
+<p>Two inks carry the whole argument. <b class="aura">Wine is the agent at work</b>: the streams of micro-tasks ticking past, warm against the dark. <b class="agent">Navy is the code that checks it</b>: the verified stamps, the structure, the kernel's cool hand. <b class="you">Ivory is everything you do</b>: your chosen chip, your margin notes, your stub. And <b class="aura">burgundy is the aura</b>, a deep wine glow with a soft rose halo, reserved for the few moments that deserve it: the wordmark, the stamp, your marks. Wine, not pink; warm against the agent’s cool. If something glows on this page, it earned the glow. Everything else stays dark.</p>
+</div>
+<p>Three typefaces, three jobs. <b>Inter Tight</b> is the headline voice: shoulders back, tightly set. <b>Decima</b>, a razor-contrast didone cut for this brand in two optical sizes, and the only face here that ships with the site itself, whispers in spaced capitals: the kickers, the pull-lines, the fashion-house whisper. The display cut carries the wordmark's %; a sturdier text cut keeps the hairlines alive at small sizes. <b>Source Serif 4</b> does the reading. A fourth, <b>Fragment Mono</b>, is the machine’s own hand: streams, receipts, working notes.</p>
+
+<hr>
+
+<h2>Two excerpts, no more</h2>
+<p>The rest of the code you can read by viewing source. It’s one file. These two lines are the ones worth quoting. The first is the button dying:</p>
+<pre><code><span class="c">// release, left to right, a sandbank eroding</span>
+d: (x / width) * 620 + rnd(0,150)
+p.vy += .16;  <span class="c">// gravity</span>
+p.a  -= .016; <span class="c">// and the button forgets itself</span></code></pre>
+<p>The second is the slider's magnet. The whole feel of stop two is one line of arithmetic:</p>
+<pre><code><span class="c">// the closer you are, the harder home pulls</span>
+v = detent + drift * (|drift| / reach)²</code></pre>
+
+<hr>
+
+<h2>What the critique passes changed</h2>
+<p>Each pass: photograph everything, find what’s wrong, fix it, add one flourish. The first three passes shaped the original; these three shaped the redesign.</p>
+
+<div class="pass" id="pass1">
+<h3>Pass one · fresh eyes on the dark</h3>
+<ul id="p1list">
+  <li><b>The hero copy was losing its fight with the streams.</b> On a phone, the agent’s task column ran straight through the analogy line. The copy now sits on a soft dark plate, so the streams stay atmosphere, never interference.</li>
+  <li><b>The slider said “floor” twice.</b> The old end-labels duplicated the new detent names beneath the track. The end-labels went; the three named positions carry it alone.</li>
+  <li><b>The value cards’ numerals read as stray tick marks</b>. Spaced Roman capitals at tiny sizes look like debris. They became small “№ 1 / № 2 / № 3” marks instead.</li>
+  <li>Smaller crimes: this guide’s headline aura was heavier than the doctrine allows (dimmed), a few straight apostrophes had slipped into the copy (curled), and the mobile hero kicker wrapped into an orphan (shortened).</li>
+</ul>
+<p class="up">flourish: give all three inputs and the receipt signs itself, a small italic line, “yours, in exactly three strokes,” in your ink, not the agent’s.</p>
+</div>
+
+<div class="pass" id="pass2">
+<h3>Pass two · the details</h3>
+<ul id="p2list">
+  <li><b>The whisper test.</b> Even behind its new plate, the hero’s left task-column still murmured through the small print. It was dimmed to pure texture. You should feel the agent working, not read over its shoulder.</li>
+  <li><b>The VERIFIED egg glowed like a sign, not a stamp.</b> The doctrine says glow is earned, never neon; its halo was cut by a third.</li>
+  <li><b>A lone check-mark orphan.</b> On a phone, the “400/400 shipped” line broke before its final ✓, leaving the mark alone on its own line. Bound with a non-breaking space.</li>
+</ul>
+<p class="up">flourish: give all three inputs, scroll back to the top, and the hero legend has quietly moved to the past tense: “it stopped three times. For you.”</p>
+</div>
+
+<div class="pass" id="pass3">
+<h3>Pass three · ship-clean</h3>
+<ul id="p3list">
+  <li>Final full sweep at desktop and phone sizes: home and guide, every scroll depth, every interaction money state (a typed tone-word propagating, the magnetic drag and its keyboard detents, the crumble, the signed receipt, the torn stub, the past-tense hero, the <b>verify</b> egg), the reduced-motion stills, and both consoles: clean, no overflow, no errors, nothing left that a hostile art director could bill for.</li>
+</ul>
+<p class="up">flourish: hover the closing email address and its hand-drawn underline lifts and re-signs itself, the page’s last mark, made again for you.</p>
+</div>
+
+<div class="pass" id="pass4">
+<h3>Pass four · the cold eye</h3>
+<ul id="p4list">
+  <li><b>The aura was the wrong colour.</b> The spec said wine, deep burgundy with a soft rose halo, and the build had drifted to violet. Every glowing moment on both pages was re-inked: the wordmark’s breath, the stamps, the pull-lines, this palette story. Warm human wine against cool agent blue, the axis the design always wanted.</li>
+  <li><b>The № marks crept back.</b> An earlier round had retired the swashy numerals, and the two newest sections re-imported them. The value cards and the founder marks now carry bare headline-face numerals, 01 / 02 / 03, like every other number here.</li>
+  <li><b>The bespoke didone went live.</b> The kickers and pull-lines had been renting Bodoni Moda while the brand’s own cut sat unwired beside the page. Decima Display now ships self-hosted, and the rental went back.</li>
+  <li>Smaller: the founder role lines were set too small to survive a dark panel (raised, lifted a step); the hero analogy loosens its tracking on a phone and breaks by hand, so it reads as a line, not scattered glyphs; the session odometer now moves only when <i>you</i> move it; the half-empty viewport before THE VALUE was closed; and the phone-width sweep now runs the full page, hero to footer.</li>
+</ul>
+<p class="up">flourish: the wordmark’s aura now breathes in two depths of wine: rose at the crest of each breath, deep burgundy at the trough. Everything else in this round was subtraction.</p>
+</div>
+
+<div class="pass" id="pass5">
+<h3>Pass five · the stranger test</h3>
+<ul id="p5list">
+  <li><b>Real readers didn’t know what the company does.</b> So the page now says it, dead literally: a new act, <i>We hand your repetitive work to agents that run it on their own</i>, four ruled lines, no metaphors. The service, the work, the check, and what you get.</li>
+  <li><b>“Register” was an insider’s word.</b> Every act was re-captioned in plain language: pick the <i>tone</i>, set the <i>price you’d sleep at</i>, release the batch. Each interactive now opens with one sentence that says exactly what is happening and what to do. The three belief statements each carry a plain-words translation underneath.</li>
+  <li><b>The wine had drifted pink.</b> The halo was re-cut from rose to true wine, a deeper glow layered beneath it, and burgundy was woven structurally through the page, faint washes behind every act, wine-tinted rules and numerals, so the theme reads black-wine-navy, not black-navy with pink moments.</li>
+</ul>
+<p class="up">flourish: attach a module and it lands with a one-shot pulse ring. The diagram acknowledges the handover the way the receipt acknowledges your inputs.</p>
+</div>
+
+<footer>
+<p class="mono">TEN<em class="pctm">%</em> · a PARAKH agentic-infrastructure study · designed &amp; built autonomously by Claude Fable 5<br>
+<a href="../">← return to the working session</a></p>
+</footer>
+</main>
+</body>
+</html>
