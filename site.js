@@ -5,12 +5,9 @@
 'use strict';
 
 /* ---- Let's Talk booking ----
-   Paste the Calendly event URL below (e.g. 'https://calendly.com/thetenpercent/intro').
-   Until it is set, every Let's Talk button falls back to a pre-filled email. */
-window.TEN_CALENDLY = '';
-const MAILTO = 'mailto:contact@thetenpercent.in?subject=' +
-  encodeURIComponent("Let's talk") +
-  '&body=' + encodeURIComponent('Three sentences about your company:\n\n1.\n2.\n3.\n');
+   Every Let's Talk button routes to the booking page: pick a weekend hour,
+   confirm on WhatsApp, the team sends the Meet invite from Zoho mail. */
+const BOOK_URL = 'book.html';
 
 /* ---- theme ---- */
 const root = document.documentElement;
@@ -47,25 +44,8 @@ addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('.rv').forEach(el => rvIO.observe(el));
 
   /* ---- Let's Talk buttons ---- */
-  let calendlyLoaded = false;
-  function openTalk(e){
-    if(!window.TEN_CALENDLY){ return; }            /* href mailto fallback does the work */
-    e.preventDefault();
-    const pop = () => window.Calendly.initPopupWidget({url: window.TEN_CALENDLY});
-    if(calendlyLoaded && window.Calendly){ pop(); return; }
-    const css = document.createElement('link');
-    css.rel = 'stylesheet';
-    css.href = 'https://assets.calendly.com/assets/external/widget.css';
-    document.head.appendChild(css);
-    const s = document.createElement('script');
-    s.src = 'https://assets.calendly.com/assets/external/widget.js';
-    s.onload = () => { calendlyLoaded = true; pop(); };
-    s.onerror = () => { location.href = MAILTO; };
-    document.head.appendChild(s);
-  }
   document.querySelectorAll('.js-talk').forEach(a => {
-    if(!a.getAttribute('href') || a.getAttribute('href') === '#') a.setAttribute('href', MAILTO);
-    a.addEventListener('click', openTalk);
+    if(!a.getAttribute('href') || a.getAttribute('href') === '#') a.setAttribute('href', BOOK_URL);
   });
 
   /* magnetic CTAs: the button leans toward the cursor */

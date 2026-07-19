@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Book your hour · TEN%</title>
+<meta name="description" content="Book a one hour conversation with the TEN% team. Weekends, 12 pm to 8 pm IST, confirmed on WhatsApp.">
+<meta name="theme-color" content="#0a0a0d">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%230a0a0d'/%3E%3Ccircle cx='32' cy='32' r='13' fill='%238e2445'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:ital,wght@0,100..900;1,100..900&family=Source+Serif+4:ital,opsz,wght@0,8..60,200..900;1,8..60,200..900&family=Fragment+Mono:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="site.css">
+<script src="site.js"></script>
+<style>
+/* book-only: chip states for the slot grid */
+.chip:disabled{opacity:.3;cursor:not-allowed}
+.chip:disabled:hover{border-color:var(--hair)}
+.book-label{font-family:var(--mono);font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--dim);margin:2.2rem 0 0}
+.book-cta{margin-top:2.6rem;display:flex;align-items:center;gap:1.2rem;flex-wrap:wrap}
+.reg-form.book{max-width:34ch}
+</style>
+</head>
+<body>
+<div class="grain" aria-hidden="true"></div>
+
+<nav class="nav" aria-label="site">
+  <a class="nav-brand" href="index.html">TEN<em class="pctm">%</em></a>
+  <div class="nav-mid">
+    <a class="nav-link" href="index.html">Home</a>
+    <a class="nav-link" href="services.html">Test an agent</a>
+    <a class="nav-link" href="about.html">About</a>
+  </div>
+  <div class="nav-links">
+    <button class="theme-btn" id="themeBtn" type="button" aria-label="switch theme">◐</button>
+  </div>
+</nav>
+<div class="toast mono" id="toast" role="status"></div>
+
+<main>
+
+<section class="act wash-wine" id="book" aria-labelledby="h-book" style="padding-top:clamp(7rem,16vh,10rem)">
+  <span class="gnum" aria-hidden="true">01</span>
+  <p class="kick rv">Let’s talk · book your hour</p>
+  <h2 id="h-book" class="rv" style="--d:.08s">Pick your hour.</h2>
+  <p class="setup rv" style="--d:.14s">One hour with the team, on Google Meet. Weekends, <b>12 pm to 8 pm IST</b>. Pick a slot and confirm on WhatsApp. We reply from our thetenpercent.in mail with the Meet invite.</p>
+
+  <p class="book-label rv" style="--d:.2s">the day</p>
+  <div class="chips rv" style="--d:.22s" id="dayChips" role="group" aria-label="pick a day"></div>
+
+  <p class="book-label rv" style="--d:.26s">the hour · IST</p>
+  <div class="chips rv" style="--d:.28s" id="slotChips" role="group" aria-label="pick an hour"></div>
+
+  <p class="book-label rv" style="--d:.32s">you</p>
+  <div class="reg-form book rv" style="--d:.34s">
+    <label class="visually-hidden" for="bkName">your name and company, optional</label>
+    <input id="bkName" maxlength="60" autocomplete="off" spellcheck="false" placeholder="your name and company, optional">
+  </div>
+
+  <div class="book-cta rv" style="--d:.4s">
+    <a class="btn-talk" id="bkGo" href="#" target="_blank" rel="noopener">Confirm on WhatsApp</a>
+    <span class="hero-meta">opens whatsapp · we confirm and send the invite</span>
+  </div>
+
+  <footer>
+    <p class="mono">TEN<em class="pctm">%</em> · thetenpercent.in · © 2026 · <a href="mailto:contact@thetenpercent.in">contact@thetenpercent.in</a><br>
+    <a href="index.html">home</a> · <a href="services.html">test an agent</a> · <a href="about.html">about</a></p>
+  </footer>
+</section>
+
+</main>
+
+<script>
+/* the booking flow: weekend day + one hour slot, confirmed on WhatsApp */
+(() => {
+'use strict';
+const WA_NUMBER = '918130235697';
+
+/* now, in IST */
+const istNow = new Date(new Date().toLocaleString('en-US', {timeZone: 'Asia/Kolkata'}));
+
+/* the next two weekend days, today included */
+const days = [];
+const probe = new Date(istNow);
+while (days.length < 2) {
+  const dow = probe.getDay();
+  if (dow === 6 || dow === 0) {
+    days.push({
+      label: (dow === 6 ? 'Saturday' : 'Sunday') + ' ' + probe.getDate() + ' ' +
+             probe.toLocaleString('en-GB', {month: 'short'}),
+      isToday: probe.toDateString() === istNow.toDateString()
+    });
+  }
+  probe.setDate(probe.getDate() + 1);
+}
+
+/* one hour slots, 12 pm to 8 pm */
+const slots = [];
+for (let h = 12; h < 20; h++) {
+  const a = h === 12 ? 12 : h - 12;
+  const b = h + 1 - 12;
+  slots.push({label: a + ' to ' + b + ' pm', start: h});
+}
+
+const state = {day: null, slot: null};
+const dayWrap = document.getElementById('dayChips');
+const slotWrap = document.getElementById('slotChips');
+const go = document.getElementById('bkGo');
+
+function makeChip(wrap, label, onSel) {
+  const b = document.createElement('button');
+  b.type = 'button';
+  b.className = 'chip';
+  b.textContent = label;
+  b.addEventListener('click', () => {
+    [...wrap.children].forEach(c => c.classList.remove('sel'));
+    b.classList.add('sel');
+    onSel();
+    sync();
+  });
+  wrap.appendChild(b);
+  return b;
+}
+
+function renderSlots() {
+  slotWrap.innerHTML = '';
+  state.slot = null;
+  slots.forEach(s => {
+    const b = makeChip(slotWrap, s.label, () => { state.slot = s; });
+    if (state.day && state.day.isToday && istNow.getHours() >= s.start) b.disabled = true;
+  });
+}
+
+days.forEach(d => makeChip(dayWrap, d.label, () => { state.day = d; renderSlots(); }));
+renderSlots();
+
+function sync() {
+  if (!state.day || !state.slot) { go.setAttribute('href', '#'); return; }
+  const name = document.getElementById('bkName').value.trim();
+  const msg = 'Hi TEN% team! I would like to book a one hour call.\n' +
+    'Slot: ' + state.day.label + ', ' + state.slot.label + ' IST.\n' +
+    (name ? 'Name and company: ' + name + '\n' : '') +
+    '(sent from thetenpercent.in)';
+  go.setAttribute('href', 'https://wa.me/' + WA_NUMBER + '?text=' + encodeURIComponent(msg));
+}
+document.getElementById('bkName').addEventListener('input', sync);
+
+go.addEventListener('click', e => {
+  if (go.getAttribute('href') === '#') {
+    e.preventDefault();
+    flashToast(state.day ? 'pick an hour first' : 'pick a day first');
+  } else {
+    sync();
+    flashToast('see you there · we confirm on chat');
+  }
+});
+})();
+</script>
+</body>
+</html>
