@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Book your hour · TEN%</title>
-<meta name="description" content="Book a one hour conversation with the TEN% team. Weekends, 12 pm to 8 pm IST, confirmed by email.">
+<meta name="description" content="Book a conversation with the TEN% team, 30 or 60 minutes. Weekends, 12 pm to 8 pm IST. The Google Meet invite arrives automatically.">
 <meta name="theme-color" content="#0a0a0d">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%230a0a0d'/%3E%3Ccircle cx='32' cy='32' r='13' fill='%238e2445'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -13,13 +13,11 @@
 <link rel="stylesheet" href="site.css">
 <script src="site.js"></script>
 <style>
-/* book-only: chip states for the slot grid */
-.chip:disabled{opacity:.3;cursor:not-allowed}
-.chip:disabled:hover{border-color:var(--hair)}
-.book-label{font-family:var(--mono);font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;
-  color:var(--dim);margin:2.2rem 0 0}
-.book-cta{margin-top:2.6rem;display:flex;align-items:center;gap:1.2rem;flex-wrap:wrap}
-.reg-form.book{max-width:34ch}
+/* book-only: the scheduler well */
+.cal-well{margin-top:2.6rem;min-height:640px;border:1px solid var(--hair);background:var(--panel)}
+@media (max-width:700px){.cal-well{min-height:900px}}
+.cal-fallback{padding:2rem;font-family:var(--mono);font-size:.72rem;letter-spacing:.06em;color:var(--dim)}
+.cal-fallback a{color:var(--ink)}
 </style>
 </head>
 <body>
@@ -44,23 +42,10 @@
   <span class="gnum" aria-hidden="true">01</span>
   <p class="kick rv">Let’s talk · book your hour</p>
   <h2 id="h-book" class="rv" style="--d:.08s">Pick your hour.</h2>
-  <p class="setup rv" style="--d:.14s">One hour with the team, on Google Meet. Weekends, <b>12 pm to 8 pm IST</b>. Pick a slot and confirm by email. We reply from our thetenpercent.in mail with the Meet invite.</p>
+  <p class="setup rv" style="--d:.14s">A full hour with the team, or a quick thirty minutes. Google Meet, weekends, <b>12 pm to 8 pm IST</b>. Pick a slot below and the invite lands in your inbox on its own, Meet link included. No back and forth.</p>
 
-  <p class="book-label rv" style="--d:.2s">the day</p>
-  <div class="chips rv" style="--d:.22s" id="dayChips" role="group" aria-label="pick a day"></div>
-
-  <p class="book-label rv" style="--d:.26s">the hour · IST</p>
-  <div class="chips rv" style="--d:.28s" id="slotChips" role="group" aria-label="pick an hour"></div>
-
-  <p class="book-label rv" style="--d:.32s">you</p>
-  <div class="reg-form book rv" style="--d:.34s">
-    <label class="visually-hidden" for="bkName">your name and company, optional</label>
-    <input id="bkName" maxlength="60" autocomplete="off" spellcheck="false" placeholder="your name and company, optional">
-  </div>
-
-  <div class="book-cta rv" style="--d:.4s">
-    <a class="btn-talk" id="bkGo" href="#">Confirm by email</a>
-    <span class="hero-meta">opens your mail app · we confirm and send the invite</span>
+  <div class="cal-well rv" style="--d:.2s" id="calWell">
+    <noscript><p class="cal-fallback">This scheduler needs JavaScript. Book directly at <a href="https://cal.com/thetenpercent">cal.com/thetenpercent</a> or write to <a href="mailto:contact@thetenpercent.in">contact@thetenpercent.in</a>.</p></noscript>
   </div>
 
   <footer>
@@ -72,91 +57,27 @@
 </main>
 
 <script>
-/* the booking flow: weekend day + one hour slot, confirmed by email */
+/* the scheduler: Cal.com inline embed, 30 or 60 minutes, weekends 12 to 8 pm IST */
 (() => {
 'use strict';
-const MAIL_TO = 'contact@thetenpercent.in';
+const CAL_LINK = 'thetenpercent';
 
-/* now, in IST */
-const istNow = new Date(new Date().toLocaleString('en-US', {timeZone: 'Asia/Kolkata'}));
+(function (C, A, L) { let p = function (a, ar) { a.q.push(ar); }; let d = C.document; C.Cal = C.Cal || function () { let cal = C.Cal; let ar = arguments; if (!cal.loaded) { cal.ns = {}; cal.q = cal.q || []; d.head.appendChild(d.createElement("script")).src = A; cal.loaded = true; } if (ar[0] === L) { const api = function () { p(api, arguments); }; const namespace = ar[1]; api.q = api.q || []; if (typeof namespace === "string") { cal.ns[namespace] = cal.ns[namespace] || api; p(cal.ns[namespace], ar); p(cal, ["initNamespace", namespace]); } else p(cal, ar); return; } p(cal, ar); }; })(window, "https://app.cal.com/embed/embed.js", "init");
 
-/* the next two weekend days, today included */
-const days = [];
-const probe = new Date(istNow);
-while (days.length < 2) {
-  const dow = probe.getDay();
-  if (dow === 6 || dow === 0) {
-    days.push({
-      label: (dow === 6 ? 'Saturday' : 'Sunday') + ' ' + probe.getDate() + ' ' +
-             probe.toLocaleString('en-GB', {month: 'short'}),
-      isToday: probe.toDateString() === istNow.toDateString()
-    });
-  }
-  probe.setDate(probe.getDate() + 1);
-}
-
-/* one hour slots, 12 pm to 8 pm */
-const slots = [];
-for (let h = 12; h < 20; h++) {
-  const a = h === 12 ? 12 : h - 12;
-  const b = h + 1 - 12;
-  slots.push({label: a + ' to ' + b + ' pm', start: h});
-}
-
-const state = {day: null, slot: null};
-const dayWrap = document.getElementById('dayChips');
-const slotWrap = document.getElementById('slotChips');
-const go = document.getElementById('bkGo');
-
-function makeChip(wrap, label, onSel) {
-  const b = document.createElement('button');
-  b.type = 'button';
-  b.className = 'chip';
-  b.textContent = label;
-  b.addEventListener('click', () => {
-    [...wrap.children].forEach(c => c.classList.remove('sel'));
-    b.classList.add('sel');
-    onSel();
-    sync();
-  });
-  wrap.appendChild(b);
-  return b;
-}
-
-function renderSlots() {
-  slotWrap.innerHTML = '';
-  state.slot = null;
-  slots.forEach(s => {
-    const b = makeChip(slotWrap, s.label, () => { state.slot = s; });
-    if (state.day && state.day.isToday && istNow.getHours() >= s.start) b.disabled = true;
-  });
-}
-
-days.forEach(d => makeChip(dayWrap, d.label, () => { state.day = d; renderSlots(); }));
-renderSlots();
-
-function sync() {
-  if (!state.day || !state.slot) { go.setAttribute('href', '#'); return; }
-  const name = document.getElementById('bkName').value.trim();
-  const subject = 'Booking: ' + state.day.label + ', ' + state.slot.label + ' IST';
-  const body = 'Hi TEN% team!\n\nI would like to book a one hour call.\n' +
-    'Slot: ' + state.day.label + ', ' + state.slot.label + ' IST.\n' +
-    (name ? 'Name and company: ' + name + '\n' : '') +
-    '\n(sent from thetenpercent.in)';
-  go.setAttribute('href', 'mailto:' + MAIL_TO +
-    '?subject=' + encodeURIComponent(subject) +
-    '&body=' + encodeURIComponent(body));
-}
-document.getElementById('bkName').addEventListener('input', sync);
-
-go.addEventListener('click', e => {
-  if (go.getAttribute('href') === '#') {
-    e.preventDefault();
-    flashToast(state.day ? 'pick an hour first' : 'pick a day first');
-  } else {
-    sync();
-    flashToast('see you there · we confirm by mail');
-  }
+const dark = !document.documentElement.hasAttribute('data-theme');
+Cal("init", "book", {origin: "https://app.cal.com"});
+Cal.ns["book"]("inline", {
+  elementOrSelector: "#calWell",
+  config: {layout: "month_view", theme: dark ? "dark" : "light"},
+  calLink: CAL_LINK
+});
+Cal.ns["book"]("ui", {
+  theme: dark ? "dark" : "light",
+  cssVarsPerTheme: {
+    dark:  {"cal-brand": "#b8485f"},
+    light: {"cal-brand": "#8e2445"}
+  },
+  hideEventTypeDetails: false
 });
 })();
 </script>
