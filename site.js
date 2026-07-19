@@ -6,7 +6,7 @@
 
 /* ---- Let's Talk booking ----
    Every Let's Talk button routes to the booking page: pick a weekend hour,
-   confirm on WhatsApp, the team sends the Meet invite from Zoho mail. */
+   confirm by email, the team sends the Meet invite from Zoho mail. */
 const BOOK_URL = 'book.html';
 
 /* ---- theme ---- */

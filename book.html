@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Book your hour · TEN%</title>
-<meta name="description" content="Book a one hour conversation with the TEN% team. Weekends, 12 pm to 8 pm IST, confirmed on WhatsApp.">
+<meta name="description" content="Book a one hour conversation with the TEN% team. Weekends, 12 pm to 8 pm IST, confirmed by email.">
 <meta name="theme-color" content="#0a0a0d">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%230a0a0d'/%3E%3Ccircle cx='32' cy='32' r='13' fill='%238e2445'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -44,7 +44,7 @@
   <span class="gnum" aria-hidden="true">01</span>
   <p class="kick rv">Let’s talk · book your hour</p>
   <h2 id="h-book" class="rv" style="--d:.08s">Pick your hour.</h2>
-  <p class="setup rv" style="--d:.14s">One hour with the team, on Google Meet. Weekends, <b>12 pm to 8 pm IST</b>. Pick a slot and confirm on WhatsApp. We reply from our thetenpercent.in mail with the Meet invite.</p>
+  <p class="setup rv" style="--d:.14s">One hour with the team, on Google Meet. Weekends, <b>12 pm to 8 pm IST</b>. Pick a slot and confirm by email. We reply from our thetenpercent.in mail with the Meet invite.</p>
 
   <p class="book-label rv" style="--d:.2s">the day</p>
   <div class="chips rv" style="--d:.22s" id="dayChips" role="group" aria-label="pick a day"></div>
@@ -59,8 +59,8 @@
   </div>
 
   <div class="book-cta rv" style="--d:.4s">
-    <a class="btn-talk" id="bkGo" href="#" target="_blank" rel="noopener">Confirm on WhatsApp</a>
-    <span class="hero-meta">opens whatsapp · we confirm and send the invite</span>
+    <a class="btn-talk" id="bkGo" href="#">Confirm by email</a>
+    <span class="hero-meta">opens your mail app · we confirm and send the invite</span>
   </div>
 
   <footer>
@@ -72,10 +72,10 @@
 </main>
 
 <script>
-/* the booking flow: weekend day + one hour slot, confirmed on WhatsApp */
+/* the booking flow: weekend day + one hour slot, confirmed by email */
 (() => {
 'use strict';
-const WA_NUMBER = '918130235697';
+const MAIL_TO = 'contact@thetenpercent.in';
 
 /* now, in IST */
 const istNow = new Date(new Date().toLocaleString('en-US', {timeZone: 'Asia/Kolkata'}));
@@ -138,11 +138,14 @@ renderSlots();
 function sync() {
   if (!state.day || !state.slot) { go.setAttribute('href', '#'); return; }
   const name = document.getElementById('bkName').value.trim();
-  const msg = 'Hi TEN% team! I would like to book a one hour call.\n' +
+  const subject = 'Booking: ' + state.day.label + ', ' + state.slot.label + ' IST';
+  const body = 'Hi TEN% team!\n\nI would like to book a one hour call.\n' +
     'Slot: ' + state.day.label + ', ' + state.slot.label + ' IST.\n' +
     (name ? 'Name and company: ' + name + '\n' : '') +
-    '(sent from thetenpercent.in)';
-  go.setAttribute('href', 'https://wa.me/' + WA_NUMBER + '?text=' + encodeURIComponent(msg));
+    '\n(sent from thetenpercent.in)';
+  go.setAttribute('href', 'mailto:' + MAIL_TO +
+    '?subject=' + encodeURIComponent(subject) +
+    '&body=' + encodeURIComponent(body));
 }
 document.getElementById('bkName').addEventListener('input', sync);
 
@@ -152,7 +155,7 @@ go.addEventListener('click', e => {
     flashToast(state.day ? 'pick an hour first' : 'pick a day first');
   } else {
     sync();
-    flashToast('see you there · we confirm on chat');
+    flashToast('see you there · we confirm by mail');
   }
 });
 })();
